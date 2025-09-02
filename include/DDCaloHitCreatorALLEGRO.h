@@ -23,6 +23,9 @@
 #include "DDCaloHitCreator.h"
 
 
+#include "detectorSegmentations/FCCSWHCalPhiTheta_k4geo.h"
+#include "detectorSegmentations/FCCSWHCalPhiRow_k4geo.h"
+
 /**
  *  @brief  DDCaloHitCreator class
  */
@@ -61,5 +64,36 @@ private:
      */
     void GetCommonCaloHitProperties(const EVENT::CalorimeterHit *const pCaloHit, PandoraApi::CaloHit::Parameters &caloHitParameters) const;
 
+    /**
+     *  @brief  Get end cap specific calo hit properties: cell size, absorber radiation and interaction lengths, normal vector
+     * 
+     *  @param  pCaloHit the lcio calorimeter hit
+     *  @param  layers the vector of layers from DDRec extensions
+     *  @param  caloHitParameters the calo hit parameters to populate
+     *  @param  absorberCorrection to receive the absorber thickness correction for the mip equivalent energy
+     */
+    void GetEndCapCaloHitProperties(const EVENT::CalorimeterHit *const pCaloHit,  const std::vector<dd4hep::rec::LayeredCalorimeterStruct::Layer> &layers,
+        PandoraApi::CaloHit::Parameters &caloHitParameters, float &absorberCorrection) const;
+
+    /**
+     *  @brief  Get barrel specific calo hit properties: cell size, absorber radiation and interaction lengths, normal vector
+     * 
+     *  @param  pCaloHit the lcio calorimeter hit
+     *  @param  layers the vector of layers from DDRec extensions
+     *  @param  barrelSymmetryOrder the barrel order of symmetry
+     *  @param  caloHitParameters the calo hit parameters to populate
+     *  @param  normalVector is the normalVector to the sensitive layers in local coordinates
+     *  @param  absorberCorrection to receive the absorber thickness correction for the mip equivalent energy
+     */
+
+     void GetBarrelCaloHitProperties( const EVENT::CalorimeterHit *const pCaloHit,
+                                     const std::vector<dd4hep::rec::LayeredCalorimeterStruct::Layer> &layers,
+                                     unsigned int barrelSymmetryOrder,
+                                     PandoraApi::CaloHit::Parameters &caloHitParameters,
+                                     FloatVector const& normalVector,
+                                     float &absorberCorrection ) const;
+
+    std::shared_ptr<dd4hep::DDSegmentation::Segmentation> m_hcalBarrelSegmentation={};
+    std::shared_ptr<dd4hep::DDSegmentation::Segmentation> m_hcalEndcapSegmentation={};
 };
 #endif // #ifndef CALO_HIT_CREATOR_H

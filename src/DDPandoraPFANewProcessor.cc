@@ -862,6 +862,16 @@ void DDPandoraPFANewProcessor::ProcessSteeringFile()
                                m_settings.m_detectorName,
                                std::string(""));
 
+    registerProcessorParameter("ReadoutNames",
+                               "Readout names for ALLEGRO ECal and HCal, used to determine cellSize0 and cellSize1 per cell",
+                               m_caloHitCreatorSettings.m_readoutNames,
+                               std::vector<std::string>({"HCalBarrelReadout", "HCalEndcapReadout"}));
+
+    registerProcessorParameter("ReadoutSystemId",
+                               "Readout system Ids for ALLEGRO ECal and HCal, used to determine cellSize0 and cellSize1 per cell",
+                               m_caloHitCreatorSettings.m_readoutSystemId,
+                               std::vector<int>({8, 9}));
+
     registerProcessorParameter("ECalBarrelNormalVector",
                                "Normal vector for the ECal barrel sensitive layers in local coordinates",
                                m_caloHitCreatorSettings.m_eCalBarrelNormalVector,

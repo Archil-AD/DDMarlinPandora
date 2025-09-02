@@ -123,6 +123,8 @@ public:
         bool                          m_useSystemId;                      ///< flag whether to use systemId or not to identify origin of the CaloHit
         int                           m_ecalBarrelSystemId;               ///< systemId of ECal Barrel
         int                           m_hcalBarrelSystemId;               ///< systemId of HCal Barrel
+        StringVector                  m_readoutNames;                     ///< readout names for ALLEGRO ECal and HCal
+        std::vector<int>              m_readoutSystemId;                  ///< readout system Ids for ALLEGRO ECal and HCal
 
     public:
       FloatVector m_eCalBarrelNormalVector;
@@ -222,7 +224,7 @@ protected:
      *  @param  caloHitParameters the calo hit parameters to populate
      *  @param  absorberCorrection to receive the absorber thickness correction for the mip equivalent energy
      */
-    void GetEndCapCaloHitProperties(const EVENT::CalorimeterHit *const pCaloHit,  const std::vector<dd4hep::rec::LayeredCalorimeterStruct::Layer> &layers,
+    virtual void GetEndCapCaloHitProperties(const EVENT::CalorimeterHit *const pCaloHit,  const std::vector<dd4hep::rec::LayeredCalorimeterStruct::Layer> &layers,
         PandoraApi::CaloHit::Parameters &caloHitParameters, float &absorberCorrection) const;
 
     /**
@@ -235,7 +237,7 @@ protected:
      *  @param  normalVector is the normalVector to the sensitive layers in local coordinates
      *  @param  absorberCorrection to receive the absorber thickness correction for the mip equivalent energy
      */
-    void GetBarrelCaloHitProperties( const EVENT::CalorimeterHit *const pCaloHit,
+    virtual void GetBarrelCaloHitProperties( const EVENT::CalorimeterHit *const pCaloHit,
 				     const std::vector<dd4hep::rec::LayeredCalorimeterStruct::Layer> &layers,
 				     unsigned int barrelSymmetryOrder,
 				     PandoraApi::CaloHit::Parameters &caloHitParameters,
