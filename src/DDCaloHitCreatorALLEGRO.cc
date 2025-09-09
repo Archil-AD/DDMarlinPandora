@@ -58,17 +58,35 @@ DDCaloHitCreatorALLEGRO::DDCaloHitCreatorALLEGRO(const Settings &settings, const
     if (segmentationType == "FCCSWHCalPhiTheta_k4geo") {
       if(m_settings.m_hcalBarrelSystemId == m_settings.m_readoutSystemId[iSys])
         m_hcalBarrelSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiTheta_k4geo*>(aSegmentation));
+          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
+          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiTheta_k4geo*>(aSegmentation),
+          [](dd4hep::DDSegmentation::Segmentation*) {
+          // no-op deleter: don't delete the pointer
+          });
+
       else
 	m_hcalEndcapSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiTheta_k4geo*>(aSegmentation));
+          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
+          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiTheta_k4geo*>(aSegmentation),
+          [](dd4hep::DDSegmentation::Segmentation*) {
+          // no-op deleter: don't delete the pointer
+          });
     } else if (segmentationType == "FCCSWHCalPhiRow_k4geo") {
       if(m_settings.m_hcalBarrelSystemId == m_settings.m_readoutSystemId[iSys])
         m_hcalBarrelSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiRow_k4geo*>(aSegmentation));
+          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
+          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiRow_k4geo*>(aSegmentation),
+          [](dd4hep::DDSegmentation::Segmentation*) {
+          // no-op deleter: don't delete the pointer
+          });
       else
         m_hcalEndcapSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiRow_k4geo*>(aSegmentation));
+          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
+          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiRow_k4geo*>(aSegmentation),
+          [](dd4hep::DDSegmentation::Segmentation*) {
+          // no-op deleter: don't delete the pointer
+          });
+
     }
   }
 
@@ -131,8 +149,8 @@ void DDCaloHitCreatorALLEGRO::GetEndCapCaloHitProperties(const EVENT::Calorimete
     if(caloHitParameters.m_hitType.Get() == pandora::HCAL)
     {
       std::vector<double>  cellSize = m_hcalEndcapSegmentation->cellDimensions(pCaloHit->getCellID0());
-      caloHitParameters.m_cellSize0 = cellSize[0];
-      caloHitParameters.m_cellSize1 = cellSize[1];
+      caloHitParameters.m_cellSize0 = cellSize[0]/dd4hep::mm;
+      caloHitParameters.m_cellSize1 = cellSize[1]/dd4hep::mm;
     }
     else
     {
@@ -164,6 +182,7 @@ void DDCaloHitCreatorALLEGRO::GetEndCapCaloHitProperties(const EVENT::Calorimete
     }
 
 
+    /*
     //FIXME! do we need this?
     absorberCorrection = 1.;
     for (unsigned int i = 0, iMax = layers.size(); i < iMax; ++i)
@@ -181,12 +200,12 @@ void DDCaloHitCreatorALLEGRO::GetEndCapCaloHitProperties(const EVENT::Calorimete
 
         break;
     }
+    */
 
     caloHitParameters.m_cellNormalVector = (pCaloHit->getPosition()[2] > 0) ? pandora::CartesianVector(0, 0, 1) :
         pandora::CartesianVector(0, 0, -1);
 
 //     streamlog_out(DEBUG) <<" GetEndCapCaloHitProperties: physLayer: "<<physicalLayer <<" layer: "<<caloHitParameters.m_layer.Get()<<" nX0: "<<    caloHitParameters.m_nCellRadiationLengths.Get() <<" nLambdaI: "<<    caloHitParameters.m_nCellInteractionLengths.Get()<<" thickness: "<<caloHitParameters.m_cellThickness.Get()<<std::endl;
-
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------

@@ -273,6 +273,11 @@ pandora::StatusCode DDCaloHitCreator::CreateHCalCaloHits(const EVENT::LCEvent *c
                     caloHitParameters.m_hitType = pandora::HCAL;
                     caloHitParameters.m_isDigital = false;
                     caloHitParameters.m_layer = cellIdDecoder(pCaloHit)[layerCoding.c_str()];
+                    if ( m_settings.m_detectorName == "ALLEGRO" && cellIdDecoder(pCaloHit)["system"] != m_settings.m_hcalBarrelSystemId )
+                    {
+                      caloHitParameters.m_layer = cellIdDecoder(pCaloHit)["pseudoLayer"];
+                    }
+
                     caloHitParameters.m_isInOuterSamplingLayer = (this->GetNLayersFromEdge(pCaloHit) <= m_settings.m_nOuterSamplingLayers);
                     this->GetCommonCaloHitProperties(pCaloHit, caloHitParameters);
 
