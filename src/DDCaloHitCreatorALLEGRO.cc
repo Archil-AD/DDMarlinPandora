@@ -25,7 +25,6 @@
 
 //forward declarations. See in DDPandoraPFANewProcessor.cc
 
-// dd4hep::rec::LayeredCalorimeterData * getExtension(std::string detectorName);
 dd4hep::rec::LayeredCalorimeterData * getExtension(unsigned int includeFlag, unsigned int excludeFlag=0);
 
 
@@ -59,8 +58,11 @@ void DDCaloHitCreatorALLEGRO::GetCommonCaloHitProperties(const EVENT::Calorimete
     const float *pCaloHitPosition(pCaloHit->getPosition());
     const pandora::CartesianVector positionVector(pCaloHitPosition[0], pCaloHitPosition[1], pCaloHitPosition[2]);
 
-    // FIXME! AD: for ECAL the cell gemoetry should be pandora::POINTING with cellSize0 = DeltaEta and cellSize1 = DeltaPhi
-    caloHitParameters.m_cellGeometry = pandora::RECTANGULAR;
+    // HCAL cells are rectangular -> we should use pandora::RECTANGULAR.
+    // For HCAL Barrel, in some approximation, it is also possible to define as pandora::POINTING_THETAPHI if phi-theta segmentation is used.
+    if(caloHitParameters.m_hitType.Get() == pandora::HCAL)
+      caloHitParameters.m_cellGeometry = pandora::RECTANGULAR;
+    else caloHitParameters.m_cellGeometry = pandora::POINTING_THETAPHI;
     caloHitParameters.m_positionVector = positionVector;
     caloHitParameters.m_expectedDirection = positionVector.GetUnitVector();
     caloHitParameters.m_pParentAddress = (void*)pCaloHit;
