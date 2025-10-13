@@ -23,9 +23,6 @@
 #include "DDCaloHitCreator.h"
 
 
-#include "detectorSegmentations/FCCSWHCalPhiTheta_k4geo.h"
-#include "detectorSegmentations/FCCSWHCalPhiRow_k4geo.h"
-
 /**
  *  @brief  DDCaloHitCreator class
  */

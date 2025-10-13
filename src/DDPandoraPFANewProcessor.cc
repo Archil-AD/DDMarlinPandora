@@ -282,7 +282,8 @@ const EVENT::LCEvent *DDPandoraPFANewProcessor::GetCurrentEvent(const pandora::P
 pandora::StatusCode DDPandoraPFANewProcessor::RegisterUserComponents() const
 {
     PANDORA_RETURN_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LCContent::RegisterAlgorithms(*m_pPandora));
-    PANDORA_RETURN_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LCContent::RegisterBasicPlugins(*m_pPandora, m_settings.m_detectorName));
+//    PANDORA_RETURN_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LCContent::RegisterBasicPlugins(*m_pPandora, m_settings.m_detectorName));
+    PANDORA_RETURN_RESULT_IF(pandora::STATUS_CODE_SUCCESS, !=, LCContent::RegisterBasicPlugins(*m_pPandora));
 
     if(m_settings.m_useDD4hepField)
     {

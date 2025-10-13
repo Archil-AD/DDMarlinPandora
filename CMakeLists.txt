@@ -40,17 +40,15 @@ FIND_PACKAGE( LCContent 03.00.00 REQUIRED )
 FIND_PACKAGE( DD4hep REQUIRED )
 FIND_PACKAGE( ROOT REQUIRED )
 FIND_PACKAGE( MarlinTrk REQUIRED )
-FIND_PACKAGE( k4geo REQUIRED )
 
 
-FOREACH( pkg PandoraSDK Marlin MarlinUtil LCContent DD4hep ROOT MarlinTrk )
+FOREACH( pkg PandoraSDK Marlin MarlinUtil  LCContent DD4hep ROOT MarlinTrk )
     IF( ${pkg}_FOUND )
         INCLUDE_DIRECTORIES( SYSTEM ${${pkg}_INCLUDE_DIRS} )
         LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
         ADD_DEFINITIONS ( ${${pkg}_DEFINITIONS} )
     ENDIF()
 ENDFOREACH()
-
 
 IF( PANDORA_MONITORING )
     FIND_PACKAGE( PandoraMonitoring 03.00.00 REQUIRED )
@@ -78,10 +76,6 @@ ENDIF()
 
 # add library
 ADD_SHARED_LIBRARY( DDMarlinPandora ${DDMarlinPandora_SRCS} )
-
-TARGET_LINK_LIBRARIES( DDMarlinPandora PUBLIC ${k4geo_LIBRARIES} ${detectorSegmentations_LIBRARIES})
-TARGET_INCLUDE_DIRECTORIES( DDMarlinPandora PUBLIC SYSTEM ${k4geo_INCLUDE_DIRS} )
-TARGET_COMPILE_DEFINITIONS( DDMarlinPandora PUBLIC ${k4geo_DEFINITIONS} )
 
 
 ### INSTALL #################################################################

@@ -55,39 +55,14 @@ DDCaloHitCreatorALLEGRO::DDCaloHitCreatorALLEGRO(const Settings &settings, const
     std::string segmentationType = aSegmentation->type();
     streamlog_out(DEBUG) << "Segmentation type : " << segmentationType << std::endl;
 
-    if (segmentationType == "FCCSWHCalPhiTheta_k4geo") {
-      if(m_settings.m_hcalBarrelSystemId == m_settings.m_readoutSystemId[iSys])
-        m_hcalBarrelSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
-          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiTheta_k4geo*>(aSegmentation),
-          [](dd4hep::DDSegmentation::Segmentation*) {
+    if(m_settings.m_hcalBarrelSystemId == m_settings.m_readoutSystemId[iSys])
+      m_hcalBarrelSegmentation = std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(aSegmentation,[](dd4hep::DDSegmentation::Segmentation*) {
           // no-op deleter: don't delete the pointer
           });
-
-      else
-	m_hcalEndcapSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
-          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiTheta_k4geo*>(aSegmentation),
-          [](dd4hep::DDSegmentation::Segmentation*) {
+    else
+      m_hcalEndcapSegmentation = std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(aSegmentation,[](dd4hep::DDSegmentation::Segmentation*) {
           // no-op deleter: don't delete the pointer
           });
-    } else if (segmentationType == "FCCSWHCalPhiRow_k4geo") {
-      if(m_settings.m_hcalBarrelSystemId == m_settings.m_readoutSystemId[iSys])
-        m_hcalBarrelSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
-          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiRow_k4geo*>(aSegmentation),
-          [](dd4hep::DDSegmentation::Segmentation*) {
-          // no-op deleter: don't delete the pointer
-          });
-      else
-        m_hcalEndcapSegmentation =
-          std::shared_ptr<dd4hep::DDSegmentation::Segmentation>(
-          dynamic_cast<dd4hep::DDSegmentation::FCCSWHCalPhiRow_k4geo*>(aSegmentation),
-          [](dd4hep::DDSegmentation::Segmentation*) {
-          // no-op deleter: don't delete the pointer
-          });
-
-    }
   }
 
   // make sure that we got readout segmentation objects
@@ -123,7 +98,7 @@ void DDCaloHitCreatorALLEGRO::GetCommonCaloHitProperties(const EVENT::Calorimete
     const float *pCaloHitPosition(pCaloHit->getPosition());
     const pandora::CartesianVector positionVector(pCaloHitPosition[0], pCaloHitPosition[1], pCaloHitPosition[2]);
 
-    // AD: HCAL cells are rectangular! if the hit is in the HCAL get the dimensions from the segmentation class
+    // AD: HCAL cells are rectangular. If the hit is in the HCAL get the dimensions from the segmentation class
     if(caloHitParameters.m_hitType.Get() == pandora::HCAL)
       caloHitParameters.m_cellGeometry = pandora::RECTANGULAR;
     else caloHitParameters.m_cellGeometry = pandora::POINTING_THETAPHI;
@@ -145,7 +120,7 @@ void DDCaloHitCreatorALLEGRO::GetEndCapCaloHitProperties(const EVENT::Calorimete
     //FIXME! WHAT DO WE DO HERE?
     const int physicalLayer(std::min(static_cast<int>(caloHitParameters.m_layer.Get()), static_cast<int>(layers.size()-1)));
 
-    // AD: HCAL cells are rectangular! if the hit is in the HCAL get the dimensions from the segmentation class
+    // AD: HCAL cells are rectangular. if the hit is in the HCAL get the dimensions from the segmentation class
     if(caloHitParameters.m_hitType.Get() == pandora::HCAL)
     {
       std::vector<double>  cellSize = m_hcalEndcapSegmentation->cellDimensions(pCaloHit->getCellID0());
@@ -228,7 +203,7 @@ void DDCaloHitCreatorALLEGRO::GetBarrelCaloHitProperties( const EVENT::Calorimet
     // GM check if we need to handle the case of projective cells rather than fixed size..
     const int physicalLayer(std::min(static_cast<int>(caloHitParameters.m_layer.Get()), static_cast<int>(layers.size()-1)));
 
-    // AD: HCAL cells are rectangular! if the hit is in the HCAL get the dimensions from the segmentation class
+    // AD: HCAL cells are rectangular. If the hit is in the HCAL get the dimensions from the segmentation class
     if(caloHitParameters.m_hitType.Get() == pandora::HCAL)
     {
       std::vector<double>  cellSize = m_hcalBarrelSegmentation->cellDimensions(pCaloHit->getCellID0());
