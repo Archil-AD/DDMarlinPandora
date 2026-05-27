@@ -188,11 +188,19 @@ pandora::StatusCode DDCaloHitCreator::CreateECalCaloHits(const EVENT::LCEvent *c
                         caloHitParameters.m_hadronicEnergy = eCalToHadGeVEndCap * pCaloHit->getEnergy();
                     }
 
+                    if ( m_settings.m_detectorName == "ALLEGRO" )
+                    {
+                      if ( cellIdDecoder(pCaloHit)["system"] == m_settings.m_ecalBarrelSystemId && !m_settings.m_eCalBarrelToMipVec.empty() )
+                        eCalToMip = m_settings.m_eCalBarrelToMipVec[cellIdDecoder(pCaloHit)["layer"]];
+                      if ( cellIdDecoder(pCaloHit)["system"] != m_settings.m_ecalBarrelSystemId && !m_settings.m_eCalEndcapToMipVec.empty() )
+                        eCalToMip = m_settings.m_eCalEndcapToMipVec[cellIdDecoder(pCaloHit)["layer"]];
+                    }
+
                     caloHitParameters.m_mipEquivalentEnergy = pCaloHit->getEnergy() * eCalToMip * absorberCorrection;
 
                     // GM: check if this is removing hits..
                     if (caloHitParameters.m_mipEquivalentEnergy.Get() < eCalMipThreshold) {
-                        streamlog_out( MESSAGE ) << "MIP equivalent energy below threshold, skipping .." << std::endl;
+                        streamlog_out( DEBUG ) << "MIP equivalent energy below threshold, skipping .." << std::endl;
                         continue;
                     }
 
@@ -294,7 +302,17 @@ pandora::StatusCode DDCaloHitCreator::CreateHCalCaloHits(const EVENT::LCEvent *c
                         this->GetEndCapCaloHitProperties(pCaloHit, endcapLayers, caloHitParameters, absorberCorrection);
                     }
 
-                    caloHitParameters.m_mipEquivalentEnergy = pCaloHit->getEnergy() * m_settings.m_hCalToMip * absorberCorrection;
+                    float hCalToMip = m_settings.m_hCalToMip;
+
+                    if ( m_settings.m_detectorName == "ALLEGRO" )
+                    {
+                      if ( cellIdDecoder(pCaloHit)["system"] == m_settings.m_hcalBarrelSystemId && !m_settings.m_hCalBarrelToMipVec.empty() )
+                        hCalToMip = m_settings.m_hCalBarrelToMipVec[cellIdDecoder(pCaloHit)["layer"]];
+                      if ( cellIdDecoder(pCaloHit)["system"] != m_settings.m_hcalBarrelSystemId && !m_settings.m_hCalEndcapToMipVec.empty() )
+                        hCalToMip = m_settings.m_hCalEndcapToMipVec[cellIdDecoder(pCaloHit)["pseudoLayer"]];
+                    }
+
+                    caloHitParameters.m_mipEquivalentEnergy = pCaloHit->getEnergy() * hCalToMip * absorberCorrection;
 
                     if (caloHitParameters.m_mipEquivalentEnergy.Get() < m_settings.m_hCalMipThreshold)
                         continue;

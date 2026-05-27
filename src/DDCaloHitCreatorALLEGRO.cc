@@ -247,7 +247,9 @@ void DDCaloHitCreatorALLEGRO::GetBarrelCaloHitProperties( const EVENT::Calorimet
         throw pandora::StatusCodeException(pandora::STATUS_CODE_INVALID_PARAMETER);
     }
 
+    /*
     //FIXME! do we need this?
+    // AD: we do not need this since the MIP scale calibration is calculated for each layer, therefore, there is no need to correct it with absorber thickness.
     absorberCorrection = 1.;
     for (unsigned int i = 0, iMax = layers.size(); i < iMax; ++i)
     {
@@ -264,6 +266,7 @@ void DDCaloHitCreatorALLEGRO::GetBarrelCaloHitProperties( const EVENT::Calorimet
 
         break;
     }
+    */
 
     if (barrelSymmetryOrder > 2)
     {
